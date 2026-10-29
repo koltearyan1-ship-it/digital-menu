@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Annapurna Tiffin Service – Menu &amp; Prices</title>
+<meta name="description" content="Daily tiffin menu and prices for Annapurna Tiffin Service, Kolhapur. Order on WhatsApp.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;700&family=Rozha+One&display=swap">
+<style>
+  :root {
+    --leaf: #1f4d3a;
+    --leaf-soft: #eef5ec;
+    --turmeric: #e8a317;
+    --ink: #1c1f1d;
+    --muted: #5d665f;
+    --line: #d5e1d2;
+    --white: #ffffff;
+    --veg: #1a8f3c;
+    --nonveg: #b3261e;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: "Mukta", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--ink);
+    background: var(--leaf-soft);
+    padding-bottom: 96px;
+  }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 0 16px; }
+
+  header { background: var(--leaf); color: var(--white); padding: 28px 0 22px; }
+  header h1 {
+    font-family: "Rozha One", Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(2rem, 8vw, 2.8rem);
+    line-height: 1.1;
+    margin: 0 0 6px;
+  }
+  header p { margin: 0; color: #cfe3d4; }
+  .info { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .info a, .info span {
+    background: rgba(255,255,255,.12);
+    color: var(--white);
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: .95rem;
+    text-decoration: none;
+  }
+  .info a:hover { background: rgba(255,255,255,.22); }
+
+  .tools {
+    position: sticky; top: 0; z-index: 5;
+    background: var(--leaf-soft);
+    border-bottom: 1px solid var(--line);
+    padding: 10px 0;
+  }
+  .tools .wrap { display: flex; gap: 8px; align-items: center; }
+  .chips { display: flex; gap: 8px; overflow-x: auto; flex: 1; scrollbar-width: none; }
+  .chips::-webkit-scrollbar { display: none; }
+  button { font: inherit; cursor: pointer; }
+  .chip {
+    border: 1px solid var(--leaf); background: transparent; color: var(--leaf);
+    padding: 4px 14px; border-radius: 999px; white-space: nowrap;
+  }
+  .chip[aria-pressed="true"] { background: var(--leaf); color: var(--white); }
+  .vegtoggle { flex: none; border-color: var(--veg); color: var(--veg); }
+  .vegtoggle[aria-pressed="true"] { background: var(--veg); color: var(--white); }
+  button:focus-visible, a:focus-visible { outline: 3px solid var(--turmeric); outline-offset: 2px; }
+
+  section { padding-top: 22px; }
+  section h2 {
+    font-family: "Rozha One", Georgia, serif;
+    font-weight: 400; font-size: 1.5rem; margin: 0 0 4px; color: var(--leaf);
+  }
+  .note { margin: 0 0 8px; color: var(--muted); font-size: .95rem; }
+
+  .item {
+    display: grid; grid-template-columns: 1fr auto; gap: 4px 12px;
+    background: var(--white); border: 1px solid var(--line);
+    border-radius: 10px; padding: 12px 14px; margin-top: 10px;
+  }
+  .name { font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .dot {
+    width: 14px; height: 14px; border: 2px solid var(--veg); border-radius: 3px;
+    display: inline-grid; place-items: center; flex: none;
+  }
+  .dot::after { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--veg); }
+  .dot.nv { border-color: var(--nonveg); }
+  .dot.nv::after { background: var(--nonveg); }
+  .desc { grid-column: 1; color: var(--muted); font-size: .93rem; margin: 0; }
+  .price { font-weight: 700; text-align: right; }
+  .act { grid-column: 2; grid-row: 2; justify-self: end; align-self: end; }
+  .add {
+    background: var(--white); color: var(--leaf); border: 1.5px solid var(--leaf);
+    border-radius: 8px; padding: 2px 18px; font-weight: 700;
+  }
+  .qty { display: inline-flex; align-items: center; background: var(--leaf); color: var(--white); border-radius: 8px; }
+  .qty button { background: none; border: 0; color: inherit; width: 36px; height: 34px; font-size: 1.2rem; }
+  .qty span { min-width: 22px; text-align: center; font-weight: 700; }
+  .empty { color: var(--muted); padding: 24px 0; text-align: center; }
+
+  footer { margin-top: 28px; color: var(--muted); font-size: .9rem; text-align: center; }
+
+  .bar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+    background: var(--white); border-top: 1px solid var(--line);
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+  }
+  .bar .wrap { padding: 0; }
+  .order {
+    display: flex; justify-content: space-between; align-items: center;
+    width: 100%; background: #1a8f3c; color: var(--white);
+    padding: 12px 16px; border-radius: 10px; text-decoration: none; font-weight: 700;
+  }
+  .order.off { background: #9aa59d; pointer-events: none; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1 id="biz-name"></h1>
+    <p id="biz-tag"></p>
+    <div class="info" id="biz-info"></div>
+  </div>
+</header>
+
+<div class="tools">
+  <div class="wrap">
+    <div class="chips" id="chips"></div>
+    <button class="chip vegtoggle" id="vegonly" aria-pressed="false">Veg only</button>
+  </div>
+</div>
+
+<main class="wrap" id="menu"></main>
+
+<footer class="wrap">
+  <p id="biz-address"></p>
+  <p>Prices may change. Please confirm on WhatsApp.</p>
+</footer>
+
+<div class="bar"><div class="wrap">
+  <a class="order off" id="order" href="#" target="_blank" rel="noopener">
+    <span id="order-label">Add items to order</span><span id="order-total"></span>
+  </a>
+</div></div>
+
+<script>
+/* ============================================================
+   EDIT THIS SECTION ONLY. Replace with the real business details.
+   ============================================================ */
+const BUSINESS = {
+  name: "Good Vibes Cafe",
+  tagline: "GOOD FOOD - GOOD MOOD",
+  phone: "918378914432",            // country code + number, no + or spaces
+  timings: "Open 24 Hours",
+  address: "Shop No 6,Downtown Xenia Xenia,City Vista,Ashoka Nagar,Kharadi,Pune",
+  mapsUrl: "https://maps.app.goo.gl/VMXBtmkzcVvR93bUA"   // paste the real Google Maps link
+};
+
+// veg: true = vegetarian, false = non-vegetarian
+const MENU = [
+  { category: "Burgers", note: "Juicy, cheesy, freshly grilled burger delight.", items: [
+    { name: "Aloo Tikki Burger", desc: "Crispy aloo tikki with spicy chutneys.", price: 99, veg: true },
+    { name: "Veg Exotic Burger", desc: "Loaded with exotic veggies and creamy sauces.", price: 189, veg: true },
+    { name: "Nashville Crispy Chicken Burger", desc: "Crispy Nashville chicken with spicy sauce.", price: 239, veg: false }
+  ]},
+  { category: "Quick Snacks", note: "Tasty bites, ready in no time.", items: [
+    { name: "Aloo Cheese Balls", desc: "8 piece", price: 129, veg: true },
+    { name: "Chicken Nuggets", desc: "8 piece", price: 169, veg: false }
+  ]},
+  { category: "Cold Beverages", note: "", items: [
+    { name: "Hazelnut Cold Coffee", desc: "", price: 139, veg: true },
+    { name: "Ice Tea", desc: "Refreshing iced tea with a zesty twist.", price: 79, veg: true },
+    { name: "Royal Blue Mojito", desc: "", price: 99, veg: true }
+  ]}
+];
+/* ============================================================ */
+
+const cart = {};            // key "cat|index" -> quantity
+let activeCat = "All";
+let vegOnly = false;
+
+const $ = (id) => document.getElementById(id);
+const rupee = (n) => "₹" + n.toLocaleString("en-IN");
+
+function setupHeader() {
+  document.title = BUSINESS.name + " – Menu & Prices";
+  $("biz-name").textContent = BUSINESS.name;
+  $("biz-tag").textContent = BUSINESS.tagline;
+  $("biz-address").textContent = BUSINESS.address;
+  const info = $("biz-info");
+  const t = document.createElement("span");
+  t.textContent = BUSINESS.timings;
+  const call = document.createElement("a");
+  call.href = "tel:+" + BUSINESS.phone;
+  call.textContent = "Call us";
+  const map = document.createElement("a");
+  map.href = BUSINESS.mapsUrl;
+  map.target = "_blank"; map.rel = "noopener";
+  map.textContent = "Find us on map";
+  info.append(t, call, map);
+}
+
+function setupChips() {
+  const chips = $("chips");
+  chips.innerHTML = "";
+  ["All", ...MENU.map((c) => c.category)].forEach((name) => {
+    const b = document.createElement("button");
+    b.className = "chip";
+    b.textContent = name;
+    b.setAttribute("aria-pressed", String(name === activeCat));
+    b.addEventListener("click", () => { activeCat = name; setupChips(); renderMenu(); });
+    chips.appendChild(b);
+  });
+}
+
+function renderMenu() {
+  const root = $("menu");
+  root.innerHTML = "";
+  let shown = 0;
+  MENU.forEach((cat, ci) => {
+    if (activeCat !== "All" && activeCat !== cat.category) return;
+    const items = cat.items
+      .map((it, ii) => ({ it, key: ci + "|" + ii }))
+      .filter(({ it }) => !vegOnly || it.veg);
+    if (!items.length) return;
+    const sec = document.createElement("section");
+    const h = document.createElement("h2");
+    h.textContent = cat.category;
+    sec.appendChild(h);
+    if (cat.note) {
+      const n = document.createElement("p");
+      n.className = "note"; n.textContent = cat.note;
+      sec.appendChild(n);
+    }
+    items.forEach(({ it, key }) => {
+      shown++;
+      const row = document.createElement("div");
+      row.className = "item";
+      const q = cart[key] || 0;
+      row.innerHTML =
+        '<div class="name"><span class="dot' + (it.veg ? "" : " nv") + '" role="img" aria-label="' +
+        (it.veg ? "Vegetarian" : "Non-vegetarian") + '"></span><span></span></div>' +
+        '<div class="price"></div>' +
+        (it.desc ? '<p class="desc"></p>' : "") +
+        '<div class="act"></div>';
+      row.querySelector(".name span:last-child").textContent = it.name;
+      row.querySelector(".price").textContent = rupee(it.price);
+      if (it.desc) row.querySelector(".desc").textContent = it.desc;
+      const act = row.querySelector(".act");
+      if (q === 0) {
+        act.innerHTML = '<button class="add" data-key="' + key + '" data-d="1" aria-label="Add ' + it.name + '">Add</button>';
+      } else {
+        act.innerHTML = '<div class="qty"><button data-key="' + key + '" data-d="-1" aria-label="Remove one">−</button><span>' +
+          q + '</span><button data-key="' + key + '" data-d="1" aria-label="Add one more">+</button></div>';
+      }
+      sec.appendChild(row);
+    });
+    root.appendChild(sec);
+  });
+  if (!shown) {
+    const e = document.createElement("p");
+    e.className = "empty"; e.textContent = "No items match. Try turning off the veg filter.";
+    root.appendChild(e);
+  }
+}
+
+function updateBar() {
+  let total = 0, count = 0, lines = [];
+  Object.keys(cart).forEach((key) => {
+    const q = cart[key];
+    if (!q) return;
+    const [ci, ii] = key.split("|").map(Number);
+    const it = MENU[ci].items[ii];
+    total += it.price * q; count += q;
+    lines.push("• " + it.name + " × " + q + " = " + rupee(it.price * q));
+  });
+  const btn = $("order");
+  if (!count) {
+    btn.classList.add("off");
+    btn.removeAttribute("href");
+    $("order-label").textContent = "Add items to order";
+    $("order-total").textContent = "";
+    return;
+  }
+  const msg = "Hello " + BUSINESS.name + ", I would like to order:\n" + lines.join("\n") +
+    "\nTotal: " + rupee(total) + "\n\nName:\nAddress:";
+  btn.classList.remove("off");
+  btn.href = "https://wa.me/" + BUSINESS.phone + "?text=" + encodeURIComponent(msg);
+  $("order-label").textContent = "Order on WhatsApp (" + count + (count === 1 ? " item" : " items") + ")";
+  $("order-total").textContent = rupee(total);
+}
+
+$("menu").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-key]");
+  if (!b) return;
+  const key = b.dataset.key;
+  cart[key] = Math.max(0, (cart[key] || 0) + Number(b.dataset.d));
+  renderMenu();
+  updateBar();
+});
+
+$("vegonly").addEventListener("click", (e) => {
+  vegOnly = !vegOnly;
+  e.currentTarget.setAttribute("aria-pressed", String(vegOnly));
+  renderMenu();
+});
+
+setupHeader();
+setupChips();
+renderMenu();
+updateBar();
+</script>
+</body>
+</html>
